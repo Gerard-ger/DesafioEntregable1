@@ -13,7 +13,7 @@ class ProductManager {
         }
 
         //obtengo ela lista de productos desde le archivo
-        const productos = await this.obtenerProductos();
+        const productos = await this.getProduct();
        
         //Creo un nuevo "producto" con los datos proporcionados
         const nuevoProducto = {
@@ -33,6 +33,13 @@ class ProductManager {
     }
 
     async getProduct() {
+        try {
+            const result = await fs.promises.readFile(this.path, 'utf-8');
+            const productos = JSON.parse(result);
+            return productos;
+        } catch (error) {
+            return []
+        }
 
     }
 
@@ -48,14 +55,5 @@ class ProductManager {
 
     }
 
-    async obtenerProductos() {
-        try {
-            const result = await fs.promises.readFile(this.path, 'utf-8');
-            const productos = JSON.parse(result);
-            return productos;
-        } catch (error) {
-            return []
-        }
 
-    }
 }
