@@ -12,7 +12,7 @@ class ProductManager {
             return console.error("Producto incompleto")
         }
 
-        //obtengo ela lista de productos desde le archivo
+        //obtengo la lista de productos desde le archivo
         const productos = await this.getProduct();
        
         //Creo un nuevo "producto" con los datos proporcionados
@@ -34,17 +34,25 @@ class ProductManager {
 
     async getProduct() {
         try {
+            //Leo el archivo y lo parseo, luego devuelvo la lista de productos que obtengo
             const result = await fs.promises.readFile(this.path, 'utf-8');
             const productos = JSON.parse(result);
             return productos;
         } catch (error) {
+            //si no lee nada devuelte una lista vacia
             return []
         }
-
     }
 
-    async getProductByld() {
-
+    async getProductByld(id) {
+        //obtengo la lista de productos desde le archivo
+        const productos = await this.getProduct();
+        //recorro el array buscando el producto correcto segun el ID pasado
+        for (const producto of productos) {
+            if (producto.id == id ) {
+                return producto;
+            }
+        }
     }
 
     async updateProduct() {
