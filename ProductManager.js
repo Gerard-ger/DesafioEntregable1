@@ -76,8 +76,16 @@ class ProductManager {
     }
 
     async deleteProduct(id) {
+        //obtengo la lista de productos desde le archivo
+        const productos = await this.getProduct();
 
-        
+        for (let i = 0; i < productos.length; i++) {
+            if (producto.id == id ) {
+                delete(productos[i]);
+            }
+        }
+
+
     }
 
 
