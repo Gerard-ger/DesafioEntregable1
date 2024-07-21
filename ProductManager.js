@@ -14,10 +14,10 @@ class ProductManager {
 
         //obtengo la lista de productos desde le archivo
         const productos = await this.getProduct();
-       
+
         //Creo un nuevo "producto" con los datos proporcionados
         const nuevoProducto = {
-            id: productos.length+1,
+            id: productos.length + 1,
             title: producto.title,
             description: producto.description,
             price: producto.price,
@@ -27,9 +27,9 @@ class ProductManager {
         }
         //agrego ese producto al array de Productos
         productos.push(nuevoProducto);
-        
+
         //Escribo la nuava lista de productos al archivo
-        await fs.promises.writeFile(this.path, JSON.stringify(productos),'utf-8');
+        await fs.promises.writeFile(this.path, JSON.stringify(productos), 'utf-8');
     }
 
     async getProduct() {
@@ -49,29 +49,29 @@ class ProductManager {
         const productos = await this.getProduct();
         //recorro el array buscando el producto correcto segun el ID pasado
         for (const producto of productos) {
-            if (producto.id == id ) {
+            if (producto.id == id) {
                 return producto;
             }
         }
     }
 
     async updateProduct(id, productoAActualizar) {
-      
-         //obtengo la lista de productos desde le archivo
-         const productos = await this.getProduct();
-         //recorro el array buscando el producto correcto segun el ID pasado
-         for (const producto of productos) {
-             if (producto.id == id ) {
+
+        //obtengo la lista de productos desde le archivo
+        const productos = await this.getProduct();
+        //recorro el array buscando el producto correcto segun el ID pasado
+        for (const producto of productos) {
+            if (producto.id == id) {
                 //cuando lo encontre le actualizo los datos 
                 producto.title = productoAActualizar.title;
                 producto.description = productoAActualizar.description;
                 producto.price = productoAActualizar.price;
                 producto.code = productoAActualizar.code;
                 producto.stock = productoAActualizar.stock;
-             }
-         }
-         //Vuelvo a guardar el array actualizado en el archivo
-         await fs.promises.writeFile(this.path, JSON.stringify(productos),'utf-8');
+            }
+        }
+        //Vuelvo a guardar el array actualizado en el archivo
+        await fs.promises.writeFile(this.path, JSON.stringify(productos), 'utf-8');
 
     }
 
@@ -79,9 +79,10 @@ class ProductManager {
         //obtengo la lista de productos desde le archivo
         const productos = await this.getProduct();
 
+        //recorro la lista y cuando encuentro el ip del producto lo elimino
         for (let i = 0; i < productos.length; i++) {
-            if (producto.id == id ) {
-                delete(productos[i]);
+            if (producto.id == id) {
+                delete (productos[i]);
             }
         }
 
@@ -90,3 +91,17 @@ class ProductManager {
 
 
 }
+
+
+
+const test = async () => {
+    const productoManager = new ProductManager('./productos.json');
+
+    await productoManager.addProduct({ title: "producto prueba", description:"Este es un producto prueba", price: 200, thumbnail: "Sin imagen", code:"abc123", stock: 25 })
+    const productos = await productoManager.getProduct();
+    console.log(productos)
+
+
+}
+
+test();
