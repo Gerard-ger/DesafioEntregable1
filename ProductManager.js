@@ -44,15 +44,13 @@ class ProductManager {
         }
     }
 
-    async getProductByld(id) {
+    async getProductById(id) {
         //obtengo la lista de productos desde le archivo
         const productos = await this.getProduct();
-        //recorro el array buscando el producto correcto segun el ID pasado
-        for (const producto of productos) {
-            if (producto.id == id) {
-                return producto;
-            }
-        }
+        //Busco en el array el producto correcto segun el ID pasado
+        const producto = productos.find(p => p.id === id);
+        //retorno el encontrado o error
+        return producto || `No se encontró un producto con el id ${id}`;
     }
 
     async updateProduct(id, productoAActualizar) {
@@ -60,32 +58,35 @@ class ProductManager {
         //obtengo la lista de productos desde le archivo
         const productos = await this.getProduct();
         //recorro el array buscando el producto correcto segun el ID pasado
-        for (const producto of productos) {
-            if (producto.id == id) {
-                //cuando lo encontre le actualizo los datos 
-                producto.title = productoAActualizar.title;
-                producto.description = productoAActualizar.description;
-                producto.price = productoAActualizar.price;
-                producto.code = productoAActualizar.code;
-                producto.stock = productoAActualizar.stock;
-            }
+        const index = productos.findIndex(p => p.id === id);
+        //si no encuento devuelvo error
+        if (index === -1) {
+            return `No se encontró un producto con el id ${id}`;
         }
+        //actualizo los datos
+        productos[index] = {...productos[index], ...productoAActualizar };
         //Vuelvo a guardar el array actualizado en el archivo
         await fs.promises.writeFile(this.path, JSON.stringify(productos), 'utf-8');
-
+        //aviso que se actualizo correctamente
+        return `Producto con id ${id} actualizado correctamente`;
     }
 
     async deleteProduct(id) {
         //obtengo la lista de productos desde le archivo
         const productos = await this.getProduct();
 
-        //recorro la lista y cuando encuentro el ip del producto lo elimino
-        for (let i = 0; i < productos.length; i++) {
-            if (producto.id == id) {
-                delete (productos[i]);
-            }
+        //recorro el array buscando el producto correcto segun el ID pasado
+        const index = productos.findIndex(p => p.id === id);
+        //si no encuento devuelvo error
+        if (index === -1) {
+            return `No se encontró un producto con el id ${id}`;
         }
-
+        //elimino producto
+        productos.splice(index, 1);
+        //guardo el archivo actualizado
+        await fs.promises.writeFile(this.path, JSON.stringify(productos), 'utf-8');
+        //aviso que se elimino correctamente
+        return `Producto con id ${id} eliminado correctamente`;
 
     }
 
@@ -98,9 +99,16 @@ const test = async () => {
     const productoManager = new ProductManager('./productos.json');
 
     await productoManager.addProduct({ title: "producto prueba", description:"Este es un producto prueba", price: 200, thumbnail: "Sin imagen", code:"abc123", stock: 25 })
+   
     const productos = await productoManager.getProduct();
-    console.log(productos)
 
+    console.log(productos);
+
+    console.log(await productoManager.getProductById(5));
+    
+    console.log(await productoManager.updateProduct(1, { price: 300 }));
+
+    console.log(await productoManager.deleteProduct(1));
 
 }
 
